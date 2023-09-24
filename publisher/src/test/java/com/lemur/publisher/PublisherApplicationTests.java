@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 class PublisherApplicationTests {
@@ -60,7 +63,25 @@ class PublisherApplicationTests {
     }
 
     @Test
-    void contextLoads() {
+    public void testSendMessage2TopicExchange1() throws Exception {
+        String exchangeName = "lemur.topic";
+        String message = "hello, 中华网";
+        rabbitTemplate.convertAndSend(exchangeName, "china.news", message);
+    }
+
+    @Test
+    public void testSendMessage2TopicExchange2() throws Exception {
+        String exchangeName = "lemur.topic";
+        String message = "china , weather";
+        rabbitTemplate.convertAndSend(exchangeName, "china.weather", message);
+    }
+
+    @Test
+    public void testSendObjectQueue() throws Exception {
+        Map<String, Object> message = new HashMap<>();
+        message.put("name","lemur");
+        message.put("age",21);
+        rabbitTemplate.convertAndSend("object.queue", message);
     }
 
 }

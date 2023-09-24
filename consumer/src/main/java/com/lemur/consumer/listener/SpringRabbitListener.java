@@ -8,6 +8,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
+import java.util.Map;
 
 @Component
 public class SpringRabbitListener {
@@ -41,7 +42,7 @@ public class SpringRabbitListener {
 
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue("direct.queue1"),
-            exchange = @Exchange(value = "lemur.direct",type = ExchangeTypes.DIRECT),
+            exchange = @Exchange(value = "lemur.direct", type = ExchangeTypes.DIRECT),
             key = {"red", "blue"}
     ))
     public void listenDirectQueue1(String msg) {
@@ -50,10 +51,33 @@ public class SpringRabbitListener {
 
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue("direct.queue2"),
-            exchange = @Exchange(value = "lemur.direct",type = ExchangeTypes.DIRECT),
+            exchange = @Exchange(value = "lemur.direct", type = ExchangeTypes.DIRECT),
             key = {"red", "yellow"}
     ))
     public void listenDirectQueue2(String msg) {
         System.out.println("消费者接收到direct.queue2的消息：【" + msg + "】");
+    }
+
+    @RabbitListener(bindings = @QueueBinding(
+            value = @Queue("topic.queue1"),
+            exchange = @Exchange(value = "lemur.topic", type = ExchangeTypes.TOPIC),
+            key = {"china.#"}
+    ))
+    public void listenTopicQueue1(String msg) {
+        System.out.println("消费者接收到topic.queue1的消息：【" + msg + "】");
+    }
+
+    @RabbitListener(bindings = @QueueBinding(
+            value = @Queue("topic.queue2"),
+            exchange = @Exchange(value = "lemur.topic", type = ExchangeTypes.TOPIC),
+            key = {"#.news"}
+    ))
+    public void listenTopicQueue2(String msg) {
+        System.out.println("消费者接收到topic.queue2的消息：【" + msg + "】");
+    }
+
+    @RabbitListener(queues = "object.queue")
+    public void listenObjectQueue(Map<String, Object> msg) {
+        System.out.println("消费者接收到object.queue的消息：【" + msg + "】");
     }
 }
